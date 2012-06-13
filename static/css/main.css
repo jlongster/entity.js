@@ -1,0 +1,18 @@
+body {
+    background-color: grey;
+    margin: 0;
+    padding: 0;
+}
+
+canvas {
+    float: left;
+}
+
+.editor {
+    float: right;
+}
+
+.editor .methods textarea {
+    height: 20em;
+    width: 50em;
+}
