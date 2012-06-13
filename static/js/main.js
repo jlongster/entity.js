@@ -18,6 +18,7 @@ require(["data", "engine", "renderer",
             engine.install_task(new Scene(), "scene");
             engine.install_task(new Physics(), "physics");
             engine.install_task(new Input(), "input");
+            engine.run();
 
             var s = scene.ref();
 
@@ -80,6 +81,5 @@ require(["data", "engine", "renderer",
                              type == Rect ? Removable(Rect) : Noop());
             }
 
-            engine.run();
             editor.init();
         });
