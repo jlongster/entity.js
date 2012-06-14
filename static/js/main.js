@@ -1,6 +1,7 @@
 
-require(["data", "engine", "renderer", 
+require(["engine", "renderer", 
          "physics", "scene", "input",
+         "dynamics",
          "objects/rect",
          "objects/circle",
          "behaviors/walkable",
@@ -10,21 +11,21 @@ require(["data", "engine", "renderer",
          "behaviors/removable",
          "behaviors/noop",
          "material", "util", "editor"],
-        function(data, Engine, Renderer, Physics, Scene, Input,
+        function(Engine, Renderer, Physics, Scene, Input, d,
           Rect, Circle, Walkable, Sticky, gravity, Collidable,
           Removable, Noop, Material, util, editor) {
             var engine = new Engine();
-            engine.install_task(new Renderer("canvas", 500, 500), "renderer");
-            engine.install_task(new Scene(), "scene");
-            engine.install_task(new Physics(), "physics");
-            engine.install_task(new Input(), "input");
+            engine.install_task(new Renderer("canvas", 500, 500));
+            engine.install_task(new Scene());
+            engine.install_task(new Physics());
+            engine.install_task(new Input());
             engine.run();
 
-            var s = scene.ref();
+            var s = d.scene.ref();
 
             // add floor
-            var height = renderer.ref().height;
-            var width = renderer.ref().width;
+            var height = d.renderer.ref().height;
+            var width = d.renderer.ref().width;
             s.add_object(Rect({ x: width/2, 
                                 y: height-50, 
                                 width: width,

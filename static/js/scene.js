@@ -1,5 +1,5 @@
 
-define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
+define(["objects/sprite", "behaviors/noop", "util", "dynamics"], function(Sprite, Noop, util, d) {
 
     function Scene() {
         this.object_table = {};
@@ -10,13 +10,13 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
         this.remove_queue = [];
     }
 
-    Scene.prototype.heartbeat = function() {
+    function heartbeat() {
         this.process_removes();
 
         var objects = this.objects;
         var behaviors = this.behaviors;
         var global_behavs = this.global_behavs;
-        var r = renderer.ref();
+        var r = d.renderer.ref();
 
         for(var i=0, l=objects.length; i<l; i++) {
             for(var j=0, l2=global_behavs.length; j<l2; j++) {
@@ -33,14 +33,14 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
         }
     };
 
-    Scene.prototype.get_object = function(name) {
+    function get_object(name) {
         if(!this.object_table[name]) {
             console.log('get_object: "' + name + '" does not exist!');
         }
         return this.object_table[name];
     };
 
-    Scene.prototype.add_object = function(name, obj /*, behaviors ... */) {
+    function add_object(name, obj /*, behaviors ... */) {
         var behaviors;
 
         if((typeof name) == "string") {
@@ -49,6 +49,7 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
         else {
             behaviors = [].slice.call(arguments, 1);
             obj = name;
+            name = "obj" + Math.floor(Math.random()*10000);
         }
 
         this.add_behaviors(obj, behaviors);
@@ -57,23 +58,28 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
 
         obj.name = name;
         obj.load();
-        
-        if(obj.Collidable) {
-            var col = obj.Collidable;
-            physics.ref().add_object(obj,
-                                     col.density,
-                                     col.friction,
-                                     col.restitution);
+
+        for(var k in obj.b) {
+            if(obj.b[k].onAdd) {
+                obj.b[k].onAdd();
+            }
         }
     };
 
-    Scene.prototype.remove_object = function(obj) {
+    function remove_object(obj) {
         this.remove_queue.push(obj);
     };
 
-    Scene.prototype._remove_object = function(obj) {
+    function _remove_object(obj) {
         if(typeof obj == "string") {
             obj = this.get_object(obj);
+        }
+
+        console.log("removing", obj.name);
+        for(var k in obj.b) {
+            if(obj.b[k].onRemove) {
+                obj.b[k].onRemove();
+            }
         }
 
         for(var i=0, l=this.objects.length; i<l; i++) {
@@ -103,31 +109,28 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
                 behavs.push(behav);
             }
             else {
-                behav.object = null;
+                //console.log("nulled", behav.object.name);
+                //behav.object = null;
             }
         }
         this.behaviors = behavs;
         this.batched_behavs = batched_behavs;
-
-        if(obj.Collidable) {
-            physics.ref().remove_object(obj);
-        }
     };
 
-    Scene.prototype.process_removes = function() {
+    function process_removes() {
         for(var i=0, l=this.remove_queue.length; i<l; i++) {
-            this._remove_object(this.remove_queue[i]);
+            _remove_object.call(this, this.remove_queue[i]);
         }
         this.remove_queue = [];
     };
 
-    Scene.prototype.add_behavior = function(obj, behavior) {
+    function add_behavior(obj, behavior) {
         if(!behavior.isinstance(Noop)) {
             this.add_behaviors(obj, [behavior]);
         }
     };
 
-    Scene.prototype.add_behaviors = function(obj, behaviors) {
+    function add_behaviors(obj, behaviors) {
         if(typeof obj == "string") {
             obj = this.get_object(obj);
         }
@@ -162,18 +165,18 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
         }
     };
 
-    Scene.prototype.add_global_behavior = function(behavior) {
+    function add_global_behavior(behavior) {
         this.global_behavs.push(behavior);
     };
 
-    Scene.prototype.walk = function(func) {
+    function walk(func) {
         var len = this.objects.length;
         for(var i=0; i<len; i++) {
             this.objects[i] = func(this.objects[i]);
         }
     };
 
-    Scene.prototype.find_obj_at = function(x, y) {
+    function find_obj_at(x, y) {
         var len = this.objects.length;
 
         for(var i=0; i<len; i++) {
@@ -191,5 +194,8 @@ define(["objects/sprite", "behaviors/noop"], function(Sprite, Noop) {
         return null;
     };
 
-    return Scene;
+    return util.construct(Scene, heartbeat, get_object, 
+                          add_object, remove_object, process_removes,
+                          add_behavior, add_behaviors,
+                          add_global_behavior, walk, find_obj_at);
 });

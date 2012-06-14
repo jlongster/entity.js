@@ -1,12 +1,12 @@
 
-define(["objects/sprite"], function(Sprite) {
+define(["objects/sprite", "dynamics"], function(Sprite, d) {
     function Circle(opts) {
         Sprite.init(this, opts);
         this.radius = opts.radius;
     }
 
     function render() {
-        var ctx = renderer.ref()._ctx;
+        var ctx = d.renderer.ref()._ctx;
         var color = this.mat.color;
 
         ctx.fillStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";

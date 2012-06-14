@@ -1,5 +1,5 @@
 
-define(["objects/sprite", "util", "resources"], function(Sprite, util, resources) {
+define(["objects/sprite", "util", "resources", "dynamics"], function(Sprite, util, resources, d) {
     function Rect(opts) {
         Sprite.init(this, opts);
         this.size = util.vec2d(opts.width, opts.height);
@@ -19,12 +19,12 @@ define(["objects/sprite", "util", "resources"], function(Sprite, util, resources
     }
 
     function render() {
-        var ctx = renderer.ref()._ctx;
+        var ctx = d.renderer.ref()._ctx;
         var color = this.mat.color;
 
         if(this.animating) {
             if(this.anim_elapsed) {
-                this.anim_elapsed += elapsed.ref();
+                this.anim_elapsed += d.elapsed.ref();
 
                 if(this.anim_elapsed > 100) {
                     this.texture_index = (this.texture_index+1) % this.num_textures;
@@ -32,7 +32,7 @@ define(["objects/sprite", "util", "resources"], function(Sprite, util, resources
                 }
             }
             else {
-                this.anim_elapsed = elapsed.ref();
+                this.anim_elapsed = d.elapsed.ref();
             }
         }
 

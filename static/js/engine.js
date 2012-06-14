@@ -24,45 +24,46 @@ else {
 
 // engine
 
-function Engine() {
-    this.tasks = [];
-    this.last_frame = 0;
-}
 
-Engine.prototype.heartbeat = function() {
-    for(var i=0, len=this.tasks.length; i<len; i++) {
-        this.tasks[i].heartbeat();
-    }
-};
+define(["dynamics", "util"], function(d, util) {
 
-Engine.prototype.run = function() {
-    var _this = this;
-
-    function loop() {
-        var now = time();
-        // hack: the maximum time allowed to pass is 30ms
-        elapsed.set(Math.min(now - _this.last_frame, 30));
-
-        _this.heartbeat();
-
-        _this.last_frame = now;
-        requestAnimFrame(loop);
+    function Engine() {
+        this.tasks = [];
+        this.last_frame = 0;
     }
 
-    this.last_frame = time();
-    loop();
-};
+    function heartbeat() {
+        for(var i=0, len=this.tasks.length; i<len; i++) {
+            this.tasks[i].heartbeat();
+        }
+    }
 
-define(["fluids"], function(make_fluid) {
+    function run() {
+        var _this = this;
 
-    Engine.prototype.install_task = function(task, name) {
+        function loop() {
+            var now = time();
+            // hack: the maximum time allowed to pass is 30ms
+            d.elapsed.set(Math.min(now - _this.last_frame, 30));
+
+            _this.heartbeat();
+
+            _this.last_frame = now;
+            requestAnimFrame(loop);
+        }
+
+        this.last_frame = time();
+        loop();
+    }
+
+    function install_task(task) {
         this.tasks.push(task);
 
-        // make it a global fluid variable
-        window[name] = make_fluid(task);
-    };
+        // make it a global dynamic variable
+        d.Dynamic(task.typename.toLowerCase(), task);
+    }
 
-    window.elapsed = make_fluid(0);
+    d.Dynamic("elapsed", 0);
 
-    return Engine;
+    return util.construct(Engine, heartbeat, run, install_task);
 });

@@ -72,6 +72,10 @@ define(function() {
         return _construct.apply(null, args);
     }
 
+    function function_name(func) {
+        return func.name;
+    }
+
     return {
         vec2d: function(x, y) { return {x:x, y:y}; },
         vec3d: function(x, y, z) { return {x:x, y:y, z:z}; },

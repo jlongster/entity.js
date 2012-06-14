@@ -1,10 +1,10 @@
 
-define(["inputlib"], function(keys) {
+define(["inputlib", "util", "dynamics"], function(keys, util, d) {
     function Input() {
     }
 
-    Input.prototype.heartbeat = function() {
-        var player = scene.ref().get_object("player");
+    function heartbeat() {
+        var player = d.scene.ref().get_object("player");
 
         if(player) {
             if(keys.down('RIGHT')) {
@@ -49,5 +49,5 @@ define(["inputlib"], function(keys) {
         keys.reset();
     };
 
-    return Input;
+    return util.construct(Input, heartbeat);
 });

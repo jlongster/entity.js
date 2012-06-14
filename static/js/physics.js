@@ -1,5 +1,5 @@
 
-define(["objects/circle"], function(Circle) {
+define(["objects/circle", "util", "dynamics"], function(Circle, util, d) {
 
     var b2Vec2 = Box2D.Common.Math.b2Vec2;
     var b2AABB = Box2D.Collision.b2AABB;
@@ -18,7 +18,7 @@ define(["objects/circle"], function(Circle) {
         this.world = new b2World(new b2Vec2(0, 15.8), true);
 
         var debugDraw = new b2DebugDraw();
-		debugDraw.SetSprite(renderer.ref()._ctx);
+		debugDraw.SetSprite(d.renderer.ref()._ctx);
 		debugDraw.SetDrawScale(30.0);
 		debugDraw.SetFillAlpha(0.5);
 		debugDraw.SetLineThickness(0.0);
@@ -46,7 +46,7 @@ define(["objects/circle"], function(Circle) {
         this.world.SetContactListener(listener);
     }
 
-    Physics.prototype.add_object = function(obj, density, friction, restitution) {
+    function add_object(obj, density, friction, restitution) {
         var bodyDef = new b2BodyDef();
         if(obj.Sticky) {
             bodyDef.type = b2Body.b2_staticBody;
@@ -78,12 +78,12 @@ define(["objects/circle"], function(Circle) {
         obj.body = body;
     };
 
-    Physics.prototype.remove_object = function(obj) {
+    function remove_object(obj) {
         this.world.DestroyBody(obj.body);
     };
 
-    Physics.prototype.heartbeat = function() {
-        this.world.Step(elapsed.ref()/1000, 10, 10);
+    function heartbeat() {
+        this.world.Step(d.elapsed.ref()/1000, 10, 10);
         //this.world.DrawDebugData();
         this.world.ClearForces();
 
@@ -97,5 +97,5 @@ define(["objects/circle"], function(Circle) {
         }
     };
 
-    return Physics;
+    return util.construct(Physics, add_object, remove_object, heartbeat);
 });

@@ -1,5 +1,5 @@
 
-define(["util"], function(util) {
+define(["util", "dynamics"], function(util, d) {
     function Removable(types) {
         if(!types.length) {
             types = [types];
@@ -9,7 +9,7 @@ define(["util"], function(util) {
     }
 
     function remove() {
-        scene.ref().remove_object(this.object);
+        d.scene.ref().remove_object(this.object);
     }
 
     function onCollide(obj) {

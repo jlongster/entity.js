@@ -93,5 +93,5 @@ function save_fork() {
 }
 
 define(function() {
-    return {init: init};
+    return {init: function() {}};
 });
