@@ -13,15 +13,19 @@ define(["util", "dynamics"], function(util, d) {
     }
 
     function onCollide(obj) {
-        if(this.types) {
-            var t = false;
-            for(var i=0, l=this.types.length; i<l; i++) {
-                if(obj.isinstance(this.types[i])) {
-                    this.remove();
-                }
-            }
-        }
-        else {
+        // if(this.types) {
+        //     var t = false;
+        //     for(var i=0, l=this.types.length; i<l; i++) {
+        //         if(obj.isinstance(this.types[i])) {
+        //             this.remove();
+        //         }
+        //     }
+        // }
+        // else {
+        //     this.remove();
+        // }
+
+        if(obj.name == "player") {
             this.remove();
         }
     }

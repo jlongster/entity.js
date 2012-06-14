@@ -79,7 +79,7 @@ require(["engine", "renderer",
                 var sprite = type(opts);
                 s.add_object(sprite,
                              Collidable(1.0, 0.1, 0.2),
-                             type == Rect ? Removable(Rect) : Noop());
+                             Removable(Rect));
             }
 
             editor.init();
