@@ -1,10 +1,12 @@
 
-define(["util"], function(util) {
-    function Material(opts) {
-        this.color = opts.color || util.color(255, 20, 147);
-        this.texture = opts.texture;
-        this.textures = opts.textures;
-    }
+define(["class"], function(Class) {
 
-    return util.construct(Material);
+    return Class.extend({
+        init: function(opts) {
+            this.color = opts.color || { r: 255, g: 20, b: 147 };
+            this.texture = opts.texture;
+            this.textures = opts.textures;
+        }
+    });
+
 });

@@ -1,25 +1,14 @@
 
-define(["util"], function(util) {
+define(["class"], function(Class) {
     var registry = {};
 
-    function Dynamic(name, default_) {
-        if(name == "Dynamic") {
-            throw Error('"Dynamic" is an invalid name for a dynamic');
+    registry.createDynamic = function(name, default_) {
+        if(name == "createDynamic") {
+            throw Error('"createDynamic" is an invalid name for a dynamic');
         }
 
-        registry[name] = this;
-        this.value = default_;
-    }
-
-    function set(val) {
-        this.value = val;
-    }
-
-    function ref() {
-        return this.value;
+        registry[name] = default_;
     };
-
-    registry.Dynamic = util.construct(Dynamic, set, ref);
 
     return registry;
 });

@@ -1,9 +1,4 @@
 
-define(["util"], function(util) {
-    function Sticky() {
-    }
-
-    function update() {}
-
-    return util.construct(Sticky, update);
+define(["class"], function(Class) {
+    return Class.extend({name:"Sticky"});
 });

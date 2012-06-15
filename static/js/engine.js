@@ -25,45 +25,45 @@ else {
 // engine
 
 
-define(["dynamics", "util"], function(d, util) {
+define(["dynamics", "class"], function(d, Class) {
 
-    function Engine() {
-        this.tasks = [];
-        this.last_frame = 0;
-    }
+    var Engine = Class.extend({
+        init: function() {
+            this.tasks = [];
+            this.lastFrame = 0;
+        },
 
-    function heartbeat() {
-        for(var i=0, len=this.tasks.length; i<len; i++) {
-            this.tasks[i].heartbeat();
+        heartbeat: function () {
+            for(var i=0, len=this.tasks.length; i<len; i++) {
+                this.tasks[i].heartbeat();
+            }
+        },
+
+        run: function() {
+            var _this = this;
+
+            function loop() {
+                var now = time();
+                // hack: the maximum time allowed to pass is 30ms
+                d.elapsed = Math.min(now - _this.lastFrame, 30);
+
+                _this.heartbeat();
+
+                _this.lastFrame = now;
+                requestAnimFrame(loop);
+            }
+
+            this.lastFrame = time();
+            loop();
+        },
+
+        addTask: function(name, task) {
+            this.tasks.push(task);
+            d.createDynamic(name, task);
         }
-    }
+    });
 
-    function run() {
-        var _this = this;
+    d.createDynamic("elapsed", 0);
 
-        function loop() {
-            var now = time();
-            // hack: the maximum time allowed to pass is 30ms
-            d.elapsed.set(Math.min(now - _this.last_frame, 30));
-
-            _this.heartbeat();
-
-            _this.last_frame = now;
-            requestAnimFrame(loop);
-        }
-
-        this.last_frame = time();
-        loop();
-    }
-
-    function install_task(task) {
-        this.tasks.push(task);
-
-        // make it a global dynamic variable
-        d.Dynamic(task.typename.toLowerCase(), task);
-    }
-
-    d.Dynamic("elapsed", 0);
-
-    return util.construct(Engine, heartbeat, run, install_task);
+    return Engine;
 });

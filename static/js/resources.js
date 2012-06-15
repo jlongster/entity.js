@@ -9,6 +9,9 @@ define(function() {
             img.src = path;
             cache[path] = img;
         }
+        else {
+            k();
+        }
     }
 
     function get_texture(path) {

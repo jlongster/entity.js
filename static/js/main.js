@@ -1,86 +1,58 @@
 
-require(["engine", "renderer", 
-         "physics", "scene", "input",
-         "dynamics",
-         "objects/rect",
-         "objects/circle",
-         "behaviors/walkable",
-         "behaviors/sticky",
-         "behaviors/gravity",
-         "behaviors/collidable",
-         "behaviors/removable",
-         "behaviors/noop",
-         "material", "util", "editor"],
-        function(Engine, Renderer, Physics, Scene, Input, d,
-          Rect, Circle, Walkable, Sticky, gravity, Collidable,
-          Removable, Noop, Material, util, editor) {
-            var engine = new Engine();
-            engine.install_task(new Renderer("canvas", 500, 500));
-            engine.install_task(new Scene());
-            engine.install_task(new Physics());
-            engine.install_task(new Input());
-            engine.run();
+require(
+    ["slay",
+     "objects/rect",
+     "behaviors/sticky",
+     "behaviors/collidable",
+     "behaviors/removable",
+     "behaviors/noop",
+     "behaviors/drop",
+     "camera"],
+    function(sl, Rect, Sticky,
+      Collidable, Removable, Noop,
+      Drop, Camera) {
 
-            var s = d.scene.ref();
+        sl.engine.addTask("camera", new Camera());
 
-            // add floor
-            var height = d.renderer.ref().height;
-            var width = d.renderer.ref().width;
-            s.add_object(Rect({ x: width/2, 
-                                y: height-50, 
-                                width: width,
-                                height: 100,
-                                color: util.color(0, 0, 0) }),
-                         Collidable(),
-                         Sticky());
+        var scene = sl.scene;
 
-            s.add_object(Rect({ x: 10,
-                                y: -height*5 + height,
-                                width: 20,
-                                height: height*10,
-                                color: util.color(0, 0, 0) }),
-                         Collidable(),
-                         Sticky());
+        // add floor
+        var height = sl.renderer.height;
+        var width = sl.renderer.width;
+        scene.addObject(new Rect({ left: -100, 
+                                   top: height-100,
+                                   width: width*2,
+                                   height: 100,
+                                   color: { r: 0, g: 0, b: 0 } }),
+                        new Collidable(),
+                        new Sticky());
 
-            s.add_object(Rect({ x: width-10,
-                                y: -height*5 + height,
-                                width: 20,
-                                height: height*10,
-                                color: util.color(0, 0, 0) }),
-                         Collidable(),
-                         Sticky());
+        scene.addObject(new Rect({ left: width*2-100+50,
+                                   top: height-100,
+                                   width: width*3,
+                                   height: 100,
+                                   color: { r: 0, g: 0, b: 0 } }),
+                        new Collidable(),
+                        new Sticky());
 
-            // add player
-            s.add_object("player",
-                         Rect({ x: 75,
-                                y: 300, 
-                                width: 50,
-                                height: 75,
-                                texture: "static/img/player.png",
-                                num_textures: 5}),
-                         Collidable(5.0));
+        // add player
+        var Player = Rect.extend({
+            drop_sleep: 1000,
 
-            for(var i=0; i<50; i++) {
-                var type;
-                var opts = { x: Math.random()*500,
-                             y: Math.random()*100,
-                             color: util.color(200, 100, 50) };
-                
-                if(Math.random() > .5) {
-                    type = Circle;
-                    opts.radius = 25/2;
-                }
-                else {
-                    type = Rect;
-                    opts.width = 25;
-                    opts.height = 25;
-                }
-
-                var sprite = type(opts);
-                s.add_object(sprite,
-                             Collidable(1.0, 0.1, 0.2),
-                             Removable(Rect));
+            eaten: function() {
+                this.drop_sleep = Math.max(this.drop_sleep - 100, 100);
             }
-
-            editor.init();
         });
+
+        scene.addObject("player",
+                        new Player({ x: 75,
+                                   y: 300, 
+                                   width: 24,
+                                   height: 43,
+                                   texture: "static/img/player.png",
+                                   num_textures: 5}),
+                        new Collidable(5.0));
+
+        scene.addGlobalBehavior(new Drop());
+        sl.engine.run();
+    });

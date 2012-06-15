@@ -1,6 +1,4 @@
 
-define(["util"], function(util) {
-    function Noop() {}
-    
-    return util.construct(Noop);
+define(["class"], function(Class) {
+    return Class.extend({name:"Noop"});
 });
