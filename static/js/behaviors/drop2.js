@@ -1,6 +1,6 @@
 
-define(["class", "dynamics", "objects/Rect",
-        "behaviors/Collidable", "behaviors/Removable"], function(Class, d, Rect, Collidable, Removable) {
+define(["class", "dynamics", "objects/rect",
+        "behaviors/collidable", "behaviors/removable"], function(Class, d, Rect, Collidable, Removable) {
     
     return Class.extend({
         init: function() {
