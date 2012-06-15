@@ -6,23 +6,21 @@ require(
      "behaviors/collidable",
      "behaviors/removable",
      "behaviors/noop",
-     "behaviors/drop",
+     "behaviors/drop2",
      "camera"],
     function(sl, Rect, Sticky,
       Collidable, Removable, Noop,
       Drop, Camera) {
-
-        sl.engine.addTask("camera", new Camera());
 
         var scene = sl.scene;
 
         // add floor
         var height = sl.renderer.height;
         var width = sl.renderer.width;
-        scene.addObject(new Rect({ left: -100,
-                                   top: height-100,
-                                   width: width*2,
-                                   height: 100,
+        scene.addObject(new Rect({ left: 0,
+                                   top: height-50,
+                                   width: width,
+                                   height: 50,
                                    texture: "static/img/floor.png",
                                    textureRepeat: true,
                                    components: [
@@ -30,10 +28,21 @@ require(
                                        new Sticky()
                                    ]}));
 
-        scene.addObject(new Rect({ left: width*2-100+50,
-                                   top: height-100,
-                                   width: width*3,
-                                   height: 100,
+        scene.addObject(new Rect({ left: 0,
+                                   top: 0,
+                                   width: 25,
+                                   height: height,
+                                   texture: "static/img/floor.png",
+                                   textureRepeat: true,
+                                   components: [
+                                       new Collidable(),
+                                       new Sticky()
+                                   ]}));
+
+        scene.addObject(new Rect({ left: width-25,
+                                   top: 0,
+                                   width: 25,
+                                   height: height,
                                    texture: "static/img/floor.png",
                                    textureRepeat: true,
                                    components: [
@@ -46,7 +55,7 @@ require(
             drop_sleep: 1000,
 
             eaten: function() {
-                this.drop_sleep = Math.max(this.drop_sleep - 100, 100);
+                this.drop_sleep = Math.max(this.drop_sleep - 100, 20);
             }
         });
 

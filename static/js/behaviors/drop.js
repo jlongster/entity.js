@@ -12,12 +12,17 @@ define(["class", "dynamics", "objects/Rect",
             var name;
             var opts = { x: x,
                          y: y,
-                         color: { r: 200, g: 100, b: 50 } };
+                         color: { r: 200, g: 100, b: 50 },
+                         components: [
+                             new Collidable(1.0, 0.1, 0.2),
+                             new Removable(Rect)
+                         ]};
             
             if(Math.random() > .2) {
-                name = "cake";
-                opts.width = 16;
-                opts.height = 22;
+                name = "cookie";
+                opts.width = 24;
+                opts.height = 24;
+                opts.texture = "static/img/cookie.png";
             }
             else {
                 name = "bomb";
@@ -26,10 +31,7 @@ define(["class", "dynamics", "objects/Rect",
                 opts.texture = "static/img/bomb.png";
             }
 
-            d.scene.addObject(name,
-                              new Rect(opts),
-                              new Collidable(1.0, 0.1, 0.2),
-                              new Removable(Rect));
+            d.scene.addObject(name, new Rect(opts));
         },
 
         update: function(obj) {
@@ -40,7 +42,7 @@ define(["class", "dynamics", "objects/Rect",
                 if(player.pos.x > 500 && !this.dropped) {
                     this.dropped = true;
 
-                    for(var i=0; i<20; i++) {
+                   for(var i=0; i<20; i++) {
                         this.add(Math.random()*500 + player.pos.x - 200,
                                  Math.random()*100);
                     }

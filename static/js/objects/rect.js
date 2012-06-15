@@ -2,17 +2,18 @@
 define(["objects/sprite", "resources", "dynamics"], function(Sprite, resources, d) {
     return Sprite.extend({
         init: function(opts) {
-            if (opts.left) {
+            if(opts.left !== undefined) {
                 opts.x = opts.left + opts.width/2;
             }
 
-            if(opts.top) {
+            if(opts.top !== undefined) {
                 opts.y = opts.top + opts.height/2;
             }
 
             this.parent(opts);
             this.size = { x: opts.width, y: opts.height };
             this.num_textures = opts.num_textures || 1;
+            this.textureRepeat = opts.textureRepeat;
             this.texture_index = 0;
             this.orientation = 1;
             this.rot = 0;
@@ -53,15 +54,42 @@ define(["objects/sprite", "resources", "dynamics"], function(Sprite, resources, 
                     ctx.scale(-1, 1);
                 }
 
-                ctx.drawImage(resources.get_texture(this.mat.texture),
-                              this.texture_index*this.size.x,
-                              0,
-                              this.size.x,
-                              this.size.y,
-                              -this.size.x/2,
-                              -this.size.y/2,
-                              this.size.x,
-                              this.size.y);
+                var tex = resources.get_texture(this.mat.texture);
+
+                if(this.textureRepeat) {
+                    var x = 0;
+                    var y = 0;
+                    var left = -this.size.x/2;
+                    var top = -this.size.y/2;
+
+                    while(x < this.size.x) {
+                        while(y < this.size.y) {
+                            ctx.drawImage(tex,
+                                          0, 0,
+                                          tex.width,
+                                          tex.height,
+                                          left + x,
+                                          top + y,
+                                          Math.min(tex.width, this.size.x-x),
+                                          Math.min(tex.height, this.size.y-y));
+                            y += tex.height;
+                        }
+
+                        x += tex.width;
+                        y = 0;
+                    }
+                }
+                else {
+                    ctx.drawImage(tex,
+                                  this.texture_index*this.size.x,
+                                  0,
+                                  tex.width / this.num_textures,
+                                  tex.height,
+                                  -this.size.x/2,
+                                  -this.size.y/2,
+                                  this.size.x,
+                                  this.size.y);
+                }
             }
             else {
                 ctx.fillRect(-this.size.x/2, -this.size.y/2,

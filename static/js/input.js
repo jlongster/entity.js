@@ -9,7 +9,7 @@ define(["inputlib", "class", "dynamics"], function(keys, Class, d) {
             if(player) {
                 if(keys.down('RIGHT')) {
                     var vel = player.body.GetLinearVelocity();
-                    vel.x = 5;
+                    vel.x = 8;
                     player.body.SetAwake(true);
                     player.body.SetLinearVelocity(vel);
                     player.orientation = 1;
@@ -17,7 +17,7 @@ define(["inputlib", "class", "dynamics"], function(keys, Class, d) {
                 }
                 else if(keys.down('LEFT')) {
                     var vel = player.body.GetLinearVelocity();
-                    vel.x = -5;
+                    vel.x = -8;
                     player.body.SetAwake(true);
                     player.body.SetLinearVelocity(vel);
                     player.orientation = -1;

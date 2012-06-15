@@ -1,6 +1,8 @@
 
 define(["class", "dynamics"], function(Class, d) {
     var Collidable = Class.extend({
+        name: "Collidable",
+
         init: function(density, friction, restitution, damping) {
             this.density = density || 1.0;
             this.friction = friction || 0.5;

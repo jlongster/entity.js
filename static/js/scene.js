@@ -34,6 +34,10 @@ define(["objects/sprite", "behaviors/noop", "class", "dynamics"], function(Sprit
             }
         },
 
+        numObjects: function() {
+            return this.objects.length;
+        },
+        
         getObject: function(name) {
             if(!this.objectTable[name]) {
                 //console.log('getObject: "' + name + '" does not exist!');
@@ -46,14 +50,10 @@ define(["objects/sprite", "behaviors/noop", "class", "dynamics"], function(Sprit
             return objs;
         },
 
-        addObject: function(name, obj /*, behaviors ... */) {
+        addObject: function(name, obj) {
             var behaviors;
 
-            if((typeof name) == "string") {
-                behaviors = Array.prototype.slice.call(arguments, 2);
-            }
-            else {
-                behaviors = Array.prototype.slice.call(arguments, 1);
+            if((typeof name) != "string") {
                 obj = name;
                 name = "obj" + Math.floor(Math.random()*10000);
             }
@@ -135,24 +135,24 @@ define(["objects/sprite", "behaviors/noop", "class", "dynamics"], function(Sprit
             this.removeQueue = [];
         },
 
-        addBehavior: function(obj, behavior) {
-            if(!(behavior instanceof Noop)) {
-                this.addBehaviors(obj, [behavior]);
-            }
-        },
+        // addBehavior: function(obj, behavior) {
+        //     if(!(behavior instanceof Noop)) {
+        //         this.addBehaviors(obj, [behavior]);
+        //     }
+        // },
 
-        addBehaviors: function(obj, behaviors) {
+        addBehaviors: function(obj) {
             if(typeof obj == "string") {
                 obj = this.getObject(obj);
             }
 
-            for(var i=0, l=behaviors.length; i<l; i++) {
-                if(behaviors[i] instanceof Noop) {
+            for(var i=0, l=obj.components.length; i<l; i++) {
+                var behav = obj.components[i];
+                var name = behav.name;
+
+                if(behav instanceof Noop) {
                     continue;
                 }
-
-                var behav = behaviors[i];
-                var name = behav.name;
 
                 obj[name] = behav;
                 

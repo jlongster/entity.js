@@ -1,7 +1,7 @@
 
 define(["objects/sprite", "dynamics"], function(Sprite, d) {
     return Sprite.extend({
-        init: function Circle(opts) {
+        setup: function Circle(opts) {
             this.parent(this);
             this.radius = opts.radius;
         },
