@@ -2,6 +2,7 @@
 define(["objects/sprite", "resources", "dynamics"], function(Sprite, resources, d) {
     return Sprite.extend({
         init: function(opts) {
+            console.log(opts.texture);
             if(opts.left !== undefined) {
                 opts.x = opts.left + opts.width/2;
             }
@@ -16,7 +17,7 @@ define(["objects/sprite", "resources", "dynamics"], function(Sprite, resources, 
             this.textureRepeat = opts.textureRepeat;
             this.texture_index = 0;
             this.orientation = 1;
-            this.rot = 0;
+            this.rot = opts.rot || 0;
         },
 
         animate: function() {

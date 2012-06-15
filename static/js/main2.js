@@ -17,38 +17,48 @@ require(
         // add floor
         var height = sl.renderer.height;
         var width = sl.renderer.width;
-        scene.addObject(new Rect({ left: 0,
+
+        var Wall = Rect.extend({
+            init: function(opts) {
+                opts.texture = "static/img/floor.png";
+                opts.textureRepeat = true;
+                opts.components = [
+                    new Collidable(),
+                    new Sticky()
+                ];
+
+                this.parent(opts);
+            }
+        });
+        
+        scene.addObject(new Wall({ left: 0,
                                    top: height-50,
                                    width: width,
-                                   height: 50,
-                                   texture: "static/img/floor.png",
-                                   textureRepeat: true,
-                                   components: [
-                                       new Collidable(),
-                                       new Sticky()
-                                   ]}));
+                                   height: 50 }));
 
-        scene.addObject(new Rect({ left: 0,
+        scene.addObject(new Wall({ left: 0,
                                    top: 0,
                                    width: 25,
-                                   height: height,
-                                   texture: "static/img/floor.png",
-                                   textureRepeat: true,
-                                   components: [
-                                       new Collidable(),
-                                       new Sticky()
-                                   ]}));
+                                   height: height }));
 
-        scene.addObject(new Rect({ left: width-25,
+        scene.addObject(new Wall({ left: width-25,
                                    top: 0,
                                    width: 25,
-                                   height: height,
-                                   texture: "static/img/floor.png",
-                                   textureRepeat: true,
-                                   components: [
-                                       new Collidable(),
-                                       new Sticky()
-                                   ]}));
+                                   height: height }));
+
+        scene.addObject(new Wall({ left: 0,
+                                   top: 200,
+                                   width: 200,
+                                   height: 25,
+                                   rot: Math.PI/8 }));
+
+        scene.addObject(new Wall({ left: width-200,
+                                   top: 200,
+                                   width: 200,
+                                   height: 25,
+                                   rot: -Math.PI/8 }));
+
+
 
         // add player
         var Player = Rect.extend({

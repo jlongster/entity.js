@@ -56,6 +56,7 @@ define(["objects/circle", "class", "dynamics"], function(Circle, Class, d) {
                 bodyDef.type = b2Body.b2_dynamicBody;
             }
             bodyDef.position.Set(obj.pos.x/30, obj.pos.y/30);
+            bodyDef.angle = obj.rot;
             bodyDef.userData = obj;
             
             var body = this.world.CreateBody(bodyDef);
